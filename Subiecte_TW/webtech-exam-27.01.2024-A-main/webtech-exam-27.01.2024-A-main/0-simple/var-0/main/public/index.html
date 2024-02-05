@@ -1,0 +1,38 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A simple app</title>
+    <script>
+        window.onload = () => {
+            let btn = document.getElementById('load')
+            let tbl = document.getElementById('main')
+            // TODO
+            btn.addEventListener('click', async () => {
+                // La click pe buton, încărcați angajații de la server
+                const response = await fetch('http://localhost:8080/employees?job=accountant')
+                const data = await response.json()
+
+                // Golește tabelul înainte de a adăuga noi rânduri
+                tbl.innerHTML = ''
+
+                // Adaugă rânduri pentru fiecare angajat
+                data.forEach(employee => {
+                    let row = tbl.insertRow()
+                    let cell1 = row.insertCell(0)
+                    let cell2 = row.insertCell(1)
+                    cell1.innerHTML = employee.name
+                    cell2.innerHTML = employee.job
+                })
+            })
+        
+        }
+    </script>
+</head>
+<body>
+    A simple app
+    <!-- TODO -->
+    <button id="load">Load Employees</button>
+    <table id=main></table>
+</body>
+</html>

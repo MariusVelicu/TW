@@ -1,0 +1,66 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A simple app</title>
+</head>
+<body>
+    <h2>A simple app</h2>
+    <div id="main"></div>
+
+    <form id="form">
+        <label for="nameInput">Name:</label>
+        <input type="text" id="nameInput" name="nameInput" />
+
+        <label for="jobInput">Job:</label>
+        <input type="text" id="jobInput" name="jobInput" />
+
+        <button type="button" id="addBtn">Add Employee</button>
+    </form>
+
+    <script>
+        window.onload = () => {
+            let main = document.getElementById('main');
+            let nameInput = document.getElementById('nameInput');
+            let jobInput = document.getElementById('jobInput');
+            let addBtn = document.getElementById('addBtn');
+            
+            const load = async () => {
+                try {
+                    let response = await fetch('/employees');
+                    let data = await response.json();
+                    let rows = data.map((e) => `
+                        <div>
+                            ${e.name} ${e.job}
+                        </div>
+                    `);
+                    main.innerHTML = rows.join('');
+                } catch (err) {
+                    console.warn(err);
+                }
+            };
+
+            addBtn.addEventListener('click', async () => {
+                try {
+                    let response = await fetch('/employees', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            name: nameInput.value,
+                            job: jobInput.value,
+                        }),
+                    });
+                    await response.json();
+                    load();
+                } catch (err) {
+                    console.warn(err);
+                }
+            });
+
+            load();
+        };
+    </script>
+</body>
+</html>
